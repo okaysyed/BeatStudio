@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081426">
+  <meta name="description" content="BeatStudios builds custom Minecraft servers, plugins, Skripts, Discord bots, and tailored community systems.">
+  <title>BeatStudios — Minecraft & Discord Development</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#071326;--bg-2:#0a1a30;--surface:#0d2039;--surface-2:#102743;
+      --line:rgba(164,199,238,.15);--line-strong:rgba(164,199,238,.28);
+      --text:#f4f8ff;--soft:#c1d1e6;--muted:#8da5c3;--dim:#6d85a4;
+      --blue:#57a7ff;--blue-2:#8ac8ff;--ice:#dff3ff;--cyan:#61e2e7;
+      --shadow:0 24px 70px rgba(0,5,18,.34);--ease:cubic-bezier(.2,.75,.25,1);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:100px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.15;background-image:linear-gradient(rgba(153,198,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(153,198,255,.04) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+    a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}button{cursor:pointer}::selection{background:#58a9ff65;color:#fff}
+    .ambient{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 49% -15%,#174b7e 0,transparent 42%),linear-gradient(160deg,#071426 0%,#08172b 47%,#061121 100%)}
+    .orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.23;will-change:transform;animation:drift 20s ease-in-out infinite alternate}
+    .orb.one{width:560px;height:560px;left:-240px;top:8%;background:#126de0}
+    .orb.two{width:500px;height:500px;right:-220px;top:35%;background:#1788cb;animation-delay:-7s}
+    .orb.three{width:520px;height:520px;left:30%;bottom:-390px;background:#164fb6;animation-delay:-13s}
+    @keyframes drift{from{transform:translate3d(0,-15px,0) scale(.96)}to{transform:translate3d(30px,35px,0) scale(1.08)}}
+    .wrap{width:min(1160px,calc(100% - 44px));margin-inline:auto}
+    .nav-shell{position:fixed;top:15px;left:0;right:0;z-index:50;padding:0 16px}
+    .nav{max-width:1120px;margin:auto;min-height:66px;padding:0 12px 0 19px;display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid rgba(178,211,255,.19);border-radius:18px;background:rgba(7,20,39,.78);backdrop-filter:blur(22px);box-shadow:0 14px 50px #02091665}
+    .brand{display:inline-flex;align-items:center;gap:10px;font:800 19px Manrope,sans-serif;letter-spacing:-.8px;white-space:nowrap}
+    .brand-mark{display:grid;place-items:center;width:35px;height:35px;border-radius:11px;background:linear-gradient(145deg,#8ccaff,#367fe0);color:#071629;box-shadow:0 5px 20px #267ee74d;font-size:17px}
+    .brand em{font-style:normal;color:var(--blue-2)}
+    .nav-links{display:flex;align-items:center;gap:27px;color:#a2b5ce;font-size:12px;font-weight:700}
+    .nav-links a{transition:color .2s ease}.nav-links a:hover,.nav-links a:focus-visible{color:#fff}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .nav-cta{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid #77bcff58;border-radius:12px;background:linear-gradient(135deg,#bce5ff,#73baff);color:#07182a;font-size:12px;font-weight:800;transition:transform .25s var(--ease),box-shadow .25s}
+    .nav-cta:hover{transform:translateY(-2px);box-shadow:0 9px 25px #4ea9ff40}
+    .menu-toggle{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:#0d2039;color:white;font-size:19px}
+    .hero{position:relative;min-height:790px;padding:156px 0 80px;display:flex;align-items:center}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:52px}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #6eaefc32;border-radius:999px;background:#0e2a48a3;color:#c7e4ff;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:#64e2bc;box-shadow:0 0 13px #64e2bc90}
+    h1,h2,h3,p{margin-top:0}
+    .hero h1{max-width:760px;margin:25px 0 22px;font:800 clamp(52px,6.35vw,84px)/.99 Manrope,sans-serif;letter-spacing:-5.3px}
+    .hero h1 .gradient-text{background:linear-gradient(105deg,#fff 0%,#dcefff 30%,#77bcff 69%,#61e2e7 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hero-copy{max-width:610px;color:#a4bad4;font-size:15px;line-height:1.9;margin-bottom:0}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+    .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border:1px solid transparent;border-radius:13px;font-size:12px;font-weight:800;transition:transform .3s var(--ease),background .25s,border-color .25s,box-shadow .25s}
+    .btn:hover{transform:translateY(-3px)}
+    .btn.primary{background:linear-gradient(120deg,#dff4ff,#8acaff 55%,#6baaff);color:#07172a;box-shadow:0 12px 32px #2487ee36}
+    .btn.primary:hover{box-shadow:0 16px 40px #2487ee52}
+    .btn.secondary{border-color:var(--line-strong);background:#0b1d33b8;color:#e3f1ff}
+    .btn.secondary:hover{border-color:#67b3ff82;background:#102a46}
+    .hero-caption{display:flex;align-items:center;gap:12px;margin-top:27px;color:#839bb8;font-size:11px;line-height:1.7}
+    .mini-avatars{display:flex;padding-left:5px}
+    .mini-avatars span{width:25px;height:25px;margin-left:-5px;display:grid;place-items:center;border:2px solid #09182c;border-radius:50%;background:linear-gradient(145deg,#9fd7ff,#397ad5);color:#06172b;font-size:9px;font-weight:900}
+    .hero-visual{position:relative;min-width:0;perspective:1000px}
+    .visual-glow{position:absolute;inset:12% 5%;background:#187ee6;filter:blur(80px);opacity:.25;pointer-events:none}
+    .console{position:relative;padding:18px;border:1px solid #9acbff36;border-radius:25px;background:linear-gradient(145deg,#112e4ded,#091a30f2);box-shadow:0 30px 90px #01091670,inset 0 1px #ffffff12;transform:rotateY(-4deg) rotateX(2deg);transition:transform .7s var(--ease)}
+    .hero-visual:hover .console{transform:rotateY(0) rotateX(0) translateY(-4px)}
+    .console-header{display:flex;align-items:center;justify-content:space-between;padding:3px 2px 16px;border-bottom:1px solid var(--line)}
+    .console-title{display:flex;align-items:center;gap:9px;font:700 12px Manrope,sans-serif}
+    .console-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:linear-gradient(145deg,#7ac3ff,#3279dc);color:#06182c;font-size:15px}
+    .window-dots{display:flex;gap:5px}.window-dots i{width:6px;height:6px;border-radius:50%;background:#7690ad}
+    .server-preview{position:relative;min-height:185px;margin:16px 0;padding:19px;border:1px solid #a5d7ff1b;border-radius:17px;overflow:hidden;background:radial-gradient(ellipse at 85% 15%,#217bd45c,transparent 46%),linear-gradient(135deg,#163e68,#0a1a31 70%)}
+    .server-preview:after{content:"";position:absolute;width:200px;height:200px;right:-65px;bottom:-95px;border:1px solid #91caff27;border-radius:34%;transform:rotate(32deg);box-shadow:0 0 0 18px #91caff08,0 0 0 38px #91caff06}
+    .server-tag{display:inline-flex;gap:7px;align-items:center;color:#b8dcff;font-size:9px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}
+    .server-preview h3{position:relative;z-index:1;margin:17px 0 7px;font:800 28px Manrope,sans-serif;letter-spacing:-1.3px}
+    .server-preview p{position:relative;z-index:1;max-width:260px;margin:0;color:#9fbbd9;font-size:11px;line-height:1.7}
+    .server-badge{position:absolute;right:18px;top:18px;width:55px;height:55px;display:grid;place-items:center;border:1px solid #a5d7ff45;border-radius:17px;background:#2b78c63d;color:#dcf2ff;font-size:26px;box-shadow:inset 0 1px #fff1}
+    .console-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .console-stat{padding:14px 12px;border:1px solid var(--line);border-radius:13px;background:#07172cb8}
+    .console-stat strong{display:block;font:800 18px Manrope,sans-serif;letter-spacing:-.6px}
+    .console-stat span{display:block;margin-top:5px;color:#859ebc;font-size:9px;line-height:1.5}
+    .activity{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding:12px 13px;border:1px solid #8abfff21;border-radius:12px;background:#0a1c31a8;color:#abc2dc;font-size:10px}
+    .activity-left{display:flex;align-items:center;gap:8px}.activity-mark{width:25px;height:25px;display:grid;place-items:center;border-radius:8px;background:#174a67;color:#73e4db}
+    .activity strong{color:#e6f4ff;font-weight:700}.activity small{color:#72dbb8;font-weight:800;white-space:nowrap}
+    .float-chip{position:absolute;z-index:2;display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid #b5dbff3b;border-radius:13px;background:#0a1d33e8;box-shadow:0 15px 40px #020a18a8;backdrop-filter:blur(12px);animation:float 5s ease-in-out infinite}
+    .float-chip.one{top:18%;right:-25px}.float-chip.two{left:-28px;bottom:13%;animation-delay:-2.2s}
+    .float-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:#174d83;color:#a6d8ff}
+    .float-chip strong{display:block;font-size:10px}.float-chip small{display:block;margin-top:3px;color:#91aaca;font-size:9px}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .trust-strip{border-top:1px solid #a4cfff18;border-bottom:1px solid #a4cfff18;background:#07172b72}
+    .trust-inner{min-height:90px;display:flex;align-items:center;justify-content:space-between;gap:28px}
+    .trust-label{color:#7691b0;font-size:9px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;white-space:nowrap}
+    .trust-items{display:flex;align-items:center;justify-content:flex-end;gap:clamp(20px,5vw,66px);flex-wrap:wrap;color:#c3d7ee}
+    .trust-item{display:flex;align-items:center;gap:9px;font:700 12px Manrope,sans-serif;white-space:nowrap}.trust-item span{color:#71b8ff;font-size:16px}
+    .section{padding:106px 0;position:relative}
+    .section-head{max-width:700px;margin-bottom:38px}.section-head.center{text-align:center;margin-left:auto;margin-right:auto}
+    .kicker{display:inline-flex;align-items:center;gap:9px;color:#86c7ff;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .kicker:before{content:"";width:19px;height:1px;background:linear-gradient(90deg,#64b8ff,#61e2e7)}
+    .section h2{margin:14px 0 14px;font:800 clamp(34px,4.3vw,54px)/1.08 Manrope,sans-serif;letter-spacing:-2.8px}
+    .section-head p{max-width:620px;margin:0;color:#91a9c7;font-size:13px;line-height:1.9}
+    .section-head.center p{margin-inline:auto}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .stat-card{position:relative;min-height:147px;padding:21px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#102743ad,#0b1c31d9);overflow:hidden;transition:transform .35s var(--ease),border-color .3s,background .3s}
+    .stat-card:after{content:"";position:absolute;right:-40px;top:-55px;width:110px;height:110px;border-radius:50%;background:#2788e81c;filter:blur(22px)}
+    .stat-card:hover{transform:translateY(-4px);border-color:#73baff55;background:linear-gradient(145deg,#153354c9,#0c2039)}
+    .stat-top{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#8ca9c9;font-size:10px;font-weight:700}
+    .stat-icon{display:grid;place-items:center;width:30px;height:30px;border:1px solid #7fc4ff25;border-radius:10px;background:#123459;color:#8dceff;font-size:13px}
+    .stat-number{display:block;margin-top:19px;font:800 30px Manrope,sans-serif;letter-spacing:-1.5px;background:linear-gradient(100deg,#fff,#83c7ff);color:transparent;background-clip:text;-webkit-background-clip:text}
+    .stat-foot{margin-top:4px;color:#7992b1;font-size:10px}
+    .stat-note{margin-top:16px;color:#718aa9;font-size:10px;line-height:1.7}
+    .service-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}
+    .filter-list{display:flex;gap:7px;flex-wrap:wrap}
+    .filter-btn{padding:9px 13px;border:1px solid var(--line);border-radius:10px;background:#0b1d32;color:#91a9c6;font-size:10px;font-weight:800;transition:.2s}
+    .filter-btn:hover,.filter-btn.active{border-color:#63b5ff6b;background:#15385d;color:#e4f4ff}
+    .catalog-count{color:#7893b3;font-size:10px;white-space:nowrap}
+    .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+    .service-card{position:relative;display:flex;flex-direction:column;min-height:315px;padding:23px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(150deg,#112944e6,#0a1a2fe8);overflow:hidden;transition:transform .4s var(--ease),border-color .3s,box-shadow .4s}
+    .service-card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,#9dccff0c 50%,transparent 70%);transform:translateX(-130%);transition:transform .9s var(--ease);pointer-events:none}
+    .service-card:hover{transform:translateY(-6px);border-color:#70baff56;box-shadow:0 22px 50px #020b1b52}
+    .service-card:hover:before{transform:translateX(130%)}
+    .service-card[hidden]{display:none}
+    .card-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .service-icon{width:47px;height:47px;display:grid;place-items:center;border:1px solid #81c4ff2c;border-radius:14px;background:linear-gradient(145deg,#164574,#102844);color:#9bd4ff;font-size:21px;box-shadow:inset 0 1px #fff08}
+    .card-index{color:#647f9f;font:800 10px Manrope,sans-serif;letter-spacing:1.6px}
+    .service-card h3{margin:23px 0 10px;font:800 19px Manrope,sans-serif;letter-spacing:-.55px}
+    .service-card p{margin:0;color:#91a9c5;font-size:11px;line-height:1.85}
+    .tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:17px}
+    .tag{padding:6px 8px;border:1px solid #9fcfff1d;border-radius:7px;background:#081a2e;color:#87a4c5;font-size:9px;font-weight:700}
+    .service-link{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:20px;color:#a8d8ff;font-size:10px;font-weight:800}
+    .service-link span:last-child{font-size:16px;transition:transform .2s}.service-card:hover .service-link span:last-child{transform:translate(3px,-2px)}
+    .plans-section{padding-top:72px}
+    .plans-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;align-items:stretch}
+    .plan-card{position:relative;display:flex;flex-direction:column;min-width:0;padding:24px 21px 21px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(155deg,#102844e8,#09192deF);overflow:hidden;transition:transform .35s var(--ease),border-color .3s,box-shadow .35s}
+    .plan-card:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 95% 0%,#399cff12,transparent 45%);pointer-events:none}
+    .plan-card:hover{transform:translateY(-5px);border-color:#74baff65;box-shadow:0 20px 48px #020b1b55}
+    .plan-card.featured{border-color:#6bb8ff70;background:radial-gradient(ellipse at 80% 0%,#258ce22c,transparent 48%),linear-gradient(155deg,#123458f5,#09192ff5);box-shadow:0 18px 48px #137bd01b}
+    .plan-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .plan-number{color:#7899bf;font:800 9px Manrope,sans-serif;letter-spacing:1.6px}
+    .plan-pill{padding:6px 8px;border:1px solid #83c8ff35;border-radius:7px;background:#123456;color:#a9d9ff;font-size:8px;font-weight:800;letter-spacing:.5px}
+    .plan-card h3{position:relative;margin:22px 0 8px;font:800 25px Manrope,sans-serif;letter-spacing:-1px}
+    .plan-intro{position:relative;min-height:40px;margin:0;color:#8eacca;font-size:11px;line-height:1.75}
+    .plan-price{position:relative;margin:20px 0 5px;color:#eef7ff;font:800 18px Manrope,sans-serif;letter-spacing:-.5px}
+    .plan-price-note{position:relative;margin:0 0 19px;color:#718baa;font-size:9px;line-height:1.6}
+    .plan-divider{position:relative;height:1px;background:var(--line);margin-bottom:17px}
+    .plan-features{position:relative;display:grid;gap:11px;margin:0 0 24px;padding:0;list-style:none;flex:1}
+    .plan-features li{display:flex;align-items:flex-start;gap:9px;color:#b1c7e1;font-size:10px;line-height:1.6}
+    .plan-check{flex:none;margin-top:1px;width:16px;height:16px;display:grid;place-items:center;border:1px solid #66c1ff40;border-radius:5px;background:#103154;color:#85d3ff;font-size:10px;font-weight:900}
+    .plan-button{position:relative;display:flex;justify-content:center;align-items:center;gap:8px;min-height:43px;padding:11px 12px;border:1px solid #83c7ff40;border-radius:11px;background:#0d2743;color:#cbe8ff;font-size:10px;font-weight:800;transition:transform .25s,border-color .25s,background .25s}
+    .plan-button:hover{transform:translateY(-2px);border-color:#83c7ff80;background:#14385d}
+    .plan-card.featured .plan-button{border-color:transparent;background:linear-gradient(120deg,#dff4ff,#8acaff 55%,#6baaff);color:#07172a}
+    .plans-note{margin:18px 0 0;text-align:center;color:#7891b0;font-size:10px;line-height:1.8}
+    .work-section{padding-top:40px}
+    .work-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .project-card{position:relative;min-height:330px;padding:28px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,#102c4bcf,#09192ddf);overflow:hidden;transition:transform .35s var(--ease),border-color .3s}
+    .project-card:hover{transform:translateY(-4px);border-color:#6fbbff52}
+    .project-card.primary-project{background:radial-gradient(ellipse at 85% 15%,#267cca4a,transparent 40%),linear-gradient(145deg,#12365a,#0a1b30 72%)}
+    .project-card.secondary-project{background:radial-gradient(ellipse at 85% 5%,#167b9450,transparent 35%),linear-gradient(145deg,#0e2b43,#091a2c 74%)}
+    .project-meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .project-type{color:#a5c4e8;font-size:9px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}
+    .project-status{padding:7px 9px;border:1px solid #8fc8ff28;border-radius:7px;background:#09213a;color:#9bceff;font-size:9px;font-weight:800}
+    .project-card h3{margin:22px 0 10px;font:800 clamp(25px,3vw,36px)/1.1 Manrope,sans-serif;letter-spacing:-1.6px}
+    .project-card p{max-width:490px;margin:0;color:#9ab3d0;font-size:12px;line-height:1.85}
+    .project-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:19px}
+    .project-tags span{padding:7px 9px;border:1px solid #a6cefa20;border-radius:8px;background:#07192c89;color:#bad7f5;font-size:9px;font-weight:700}
+    .project-art{position:absolute;right:24px;bottom:22px;width:43%;height:103px;padding:12px;border:1px solid #9acfff32;border-radius:15px;background:linear-gradient(145deg,#14365a,#0a1a2f);box-shadow:0 16px 35px #020b1b73;transform:rotate(-3deg);transition:transform .5s var(--ease)}
+    .project-card:hover .project-art{transform:rotate(0deg) translateY(-5px)}
+    .art-top{height:8px;width:40%;border-radius:5px;background:#9acbff47}.art-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:11px}.art-row span{height:36px;border:1px solid #9fceff1b;border-radius:6px;background:linear-gradient(145deg,#1a4b78,#102a46)}
+    .secondary-project .project-art{width:38%;height:92px;background:linear-gradient(145deg,#0b4058,#0b243b);border-color:#68dadd35}.secondary-project .art-row span{background:linear-gradient(145deg,#126276,#0d344b)}
+    .project-summary{max-width:70%!important}
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .about-panel{padding:30px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#102743c9,#0a1a2fde)}
+    .about-panel h3{margin:15px 0 12px;font:800 24px/1.17 Manrope,sans-serif;letter-spacing:-1px}
+    .about-panel p{margin:0;color:#93acc9;font-size:12px;line-height:1.9}
+    .capability-list{display:grid;gap:12px;margin-top:21px}
+    .capability{display:flex;gap:11px;align-items:flex-start;color:#b7cce5;font-size:11px;line-height:1.6}
+    .check{flex:none;width:19px;height:19px;display:grid;place-items:center;border:1px solid #6cc5ff3b;border-radius:6px;background:#123657;color:#84d6ff;font-size:11px;font-weight:900}
+    .mini-callout{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:15px;padding:17px 19px;border:1px solid #7abfff35;border-radius:15px;background:linear-gradient(100deg,#10365bb8,#10243bb8)}
+    .mini-callout strong{display:block;font:800 13px Manrope,sans-serif}.mini-callout span{display:block;margin-top:5px;color:#8eaaca;font-size:10px;line-height:1.6}
+    .mini-callout .btn{flex:none;min-height:42px;padding:10px 13px;font-size:10px}
+    .process-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);border-radius:16px;overflow:hidden}
+    .process-step{min-height:190px;padding:23px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#0a1b30b8;transition:background .25s}
+    .process-step:hover{background:#102b49}
+    .process-num{color:#7fc5ff;font:800 11px Manrope,sans-serif;letter-spacing:1px}
+    .process-step h3{margin:32px 0 8px;font:800 17px Manrope,sans-serif;letter-spacing:-.5px}
+    .process-step p{margin:0;color:#869fbe;font-size:10px;line-height:1.8}
+    .contact-shell{position:relative;display:grid;grid-template-columns:.8fr 1.2fr;gap:14px}
+    .contact-intro,.contact-form-panel{border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,#102845eb,#091a2fef);padding:30px;min-width:0}
+    .contact-intro h2{font-size:clamp(31px,4vw,45px);letter-spacing:-2.3px}
+    .contact-intro>p{color:#94adca;font-size:12px;line-height:1.9}
+    .contact-checks{display:grid;gap:12px;margin-top:26px}
+    .contact-check{display:flex;gap:10px;align-items:center;color:#b2c7e1;font-size:11px}
+    .contact-check i{width:30px;height:30px;display:grid;place-items:center;border:1px solid #83c7ff22;border-radius:10px;background:#112e4c;color:#8acaff;font-style:normal}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .field{min-width:0}.field.full{grid-column:1/-1}
+    label{display:block;margin:0 0 7px;color:#8ea7c5;font-size:9px;font-weight:800;letter-spacing:1px}
+    input,textarea,select{width:100%;min-height:46px;border:1px solid #9ccfff24;border-radius:11px;background:#06172b;color:#eef7ff;outline:none;padding:12px 13px;box-shadow:inset 0 4px 12px #02091655;transition:border-color .2s,box-shadow .2s}
+    input::placeholder,textarea::placeholder{color:#647e9d}textarea{min-height:124px;resize:vertical;line-height:1.7}select{appearance:auto}input:focus,textarea:focus,select:focus{border-color:#70bcff99;box-shadow:0 0 0 3px #5aabff14}
+    .form-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .form-foot .btn{border:0}.form-note{flex:1;min-width:170px;color:#718baa;font-size:9px;line-height:1.7}
+    .toast{position:fixed;right:20px;bottom:20px;z-index:100;max-width:min(400px,calc(100% - 40px));padding:14px 17px;border:1px solid #79bdff45;border-radius:12px;background:#0c2340;box-shadow:0 18px 55px #0008;color:#e7f5ff;font-size:12px;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .25s,transform .25s}
+    .toast.show{opacity:1;transform:none}
+    footer{margin-top:80px;border-top:1px solid #9ecaff1a;background:#0613278a}
+    .footer-inner{min-height:85px;display:flex;align-items:center;justify-content:space-between;gap:16px;color:#6e87a6;font-size:10px}
+    .footer-brand{color:#bed6f2;font:800 12px Manrope,sans-serif}.footer-links{display:flex;gap:17px;flex-wrap:wrap}.footer-links a:hover{color:#cae6ff}
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}.reveal.visible{opacity:1;transform:none}
+    @media(max-width:1100px){.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:950px){.hero-grid{grid-template-columns:1fr .87fr;gap:28px}.hero h1{font-size:clamp(50px,7vw,70px);letter-spacing:-4px}.float-chip.one{right:-9px}.float-chip.two{left:-9px}.services-grid{grid-template-columns:repeat(2,1fr)}.stats-grid{grid-template-columns:repeat(2,1fr)}.process-grid{grid-template-columns:repeat(2,1fr)}.project-art{width:37%}.work-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){.wrap{width:min(100% - 32px,600px)}.nav-links{display:none;position:absolute;top:75px;left:16px;right:16px;flex-direction:column;align-items:stretch;gap:0;padding:8px;border:1px solid var(--line-strong);border-radius:16px;background:#08192df5;box-shadow:var(--shadow)}.nav-links.open{display:flex}.nav-links a{padding:14px 12px;border-radius:9px}.nav-links a:hover{background:#15314e}.nav-cta{display:none}.menu-toggle{display:block}.hero{padding:140px 0 65px;min-height:0}.hero-grid{grid-template-columns:1fr;gap:45px}.hero h1{max-width:600px;font-size:clamp(51px,11vw,75px)}.hero-copy{font-size:14px}.hero-visual{max-width:550px;width:100%;margin:auto}.console{transform:none}.float-chip.one{right:-4px;top:10%}.float-chip.two{left:-4px;bottom:8%}.trust-inner{padding:23px 0;align-items:flex-start;flex-direction:column;gap:18px}.trust-items{justify-content:flex-start;gap:20px 30px}.section{padding:78px 0}.work-section{padding-top:12px}.work-grid,.about-grid,.contact-shell{grid-template-columns:1fr}.project-card{min-height:325px}.contact-intro h2{font-size:39px}}
+    @media(max-width:520px){.wrap{width:calc(100% - 28px)}.plans-grid{grid-template-columns:1fr}.plan-intro{min-height:0}.plan-card{padding:23px}.nav-shell{padding:0 9px}.nav{min-height:59px;padding-left:12px;border-radius:15px}.brand{font-size:17px}.brand-mark{width:32px;height:32px}.hero h1{font-size:clamp(44px,12vw,61px);letter-spacing:-3.5px}.hero-actions{display:grid;grid-template-columns:1fr}.btn{width:100%}.hero-caption{align-items:flex-start}.console{padding:12px;border-radius:20px}.server-preview{min-height:180px;padding:15px}.server-preview h3{font-size:24px}.server-badge{width:44px;height:44px;right:12px;top:12px}.console-stats{gap:6px}.console-stat{padding:11px 8px}.console-stat strong{font-size:15px}.console-stat span{font-size:8px}.float-chip{padding:8px 9px}.float-icon{width:26px;height:26px}.float-chip strong{font-size:9px}.float-chip small{font-size:8px}.section h2{letter-spacing:-2px}.stats-grid{gap:8px}.stat-card{min-height:135px;padding:15px}.stat-number{font-size:27px}.service-toolbar{align-items:flex-start;flex-direction:column}.services-grid{grid-template-columns:1fr}.service-card{min-height:285px;padding:21px}.project-card{padding:22px;min-height:340px}.project-card h3{font-size:28px}.project-summary{max-width:100%!important}.project-art{position:relative;right:auto;bottom:auto;width:85%;height:90px;margin:25px 0 0 auto}.secondary-project .project-art{width:78%}.process-grid{grid-template-columns:1fr 1fr}.process-step{padding:17px;min-height:175px}.process-step h3{margin-top:24px}.about-panel,.contact-intro,.contact-form-panel{padding:22px}.mini-callout{align-items:flex-start;flex-direction:column}.mini-callout .btn{width:auto}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.form-foot{align-items:stretch;flex-direction:column}.footer-inner{padding:23px 0;align-items:flex-start;flex-direction:column;justify-content:center}.footer-links{gap:13px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="orb one"></div><div class="orb two"></div><div class="orb three"></div></div>
+  <header class="nav-shell">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="BeatStudios home"><span class="brand-mark">B</span><span>Beat<em>Studios</em></span></a>
+      <div class="nav-links" id="navLinks"><a href="#services">Services</a><a href="#plans">Plans</a><a href="#work">Projects</a><a href="#about">About</a><a href="#process">Process</a><a href="#contact">Contact</a></div>
+      <div class="nav-actions"><a class="nav-cta" href="#contact">Start a project <span>↗</span></a><button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap hero-grid">
+        <div class="hero-copy-block reveal">
+          <div class="eyebrow"><span class="status-dot"></span> Minecraft & Discord specialist</div>
+          <h1>Build a community<br>that feels <span class="gradient-text">different.</span></h1>
+          <p class="hero-copy">I'm Syed — the developer behind BeatStudios. I build custom Minecraft servers, plugins and Skripts, configure and revamp existing networks, and create Discord bots and communities around the way you want to run them.</p>
+          <div class="hero-actions"><a class="btn primary" href="#services">Explore services <span>↗</span></a><a class="btn secondary" href="#work">See featured work <span>⌁</span></a></div>
+          <div class="hero-caption"><div class="mini-avatars" aria-hidden="true"><span>B</span><span>M</span><span>D</span></div><span>Custom-built systems. Thoughtful setup.<br>Made for your players and community.</span></div>
+        </div>
+        <div class="hero-visual reveal" aria-label="Illustration of a Minecraft and Discord project dashboard">
+          <div class="visual-glow"></div>
+          <div class="console">
+            <div class="console-header"><div class="console-title"><span class="console-icon">⌘</span> BeatStudios / Workspace</div><div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div></div>
+            <div class="server-preview"><div class="server-tag"><span class="status-dot"></span> Server concept / 001</div><div class="server-badge">▦</div><h3>Your world.<br>Your systems.</h3><p>Unique gameplay, polished infrastructure and communities built with purpose.</p></div>
+            <div class="console-stats"><div class="console-stat"><strong>MINECRAFT</strong><span>Custom server systems</span></div><div class="console-stat"><strong>DISCORD</strong><span>Bots & communities</span></div><div class="console-stat"><strong>TAILORED</strong><span>Built to your brief</span></div></div>
+            <div class="activity"><div class="activity-left"><span class="activity-mark">✓</span><span><strong>Build philosophy</strong><br>Clean, capable, maintainable</span></div><small>READY TO BUILD</small></div>
+          </div>
+          <div class="float-chip one"><span class="float-icon">✦</span><span><strong>Custom systems</strong><small>Not a one-size-fits-all setup</small></span></div>
+          <div class="float-chip two"><span class="float-icon">⌘</span><span><strong>Server management</strong><small>Configuration to optimization</small></span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust-strip"><div class="wrap trust-inner"><div class="trust-label">What I work with</div><div class="trust-items"><div class="trust-item"><span>▦</span> Minecraft Networks</div><div class="trust-item"><span>⌘</span> Discord Systems</div><div class="trust-item"><span>⌁</span> Plugins & Skripts</div><div class="trust-item"><span>◈</span> Hosting Management</div></div></div></div>
+
+    <section class="section" id="stats"><div class="wrap"><div class="section-head reveal"><div class="kicker">The numbers</div><h2>Experience you can<br>build on.</h2><p>Focused on practical solutions, strong foundations and projects shaped around each community. Add your verified totals below to make the portfolio metrics yours.</p></div>
+      <div class="stats-grid">
+        <article class="stat-card reveal"><div class="stat-top"><span>Clients served</span><span class="stat-icon">♙</span></div><strong class="stat-number" data-stat="clients">—</strong><div class="stat-foot">People & teams supported</div></article>
+        <article class="stat-card reveal"><div class="stat-top"><span>Projects delivered</span><span class="stat-icon">◈</span></div><strong class="stat-number" data-stat="projects">—</strong><div class="stat-foot">Builds, systems & commissions</div></article>
+        <article class="stat-card reveal"><div class="stat-top"><span>Featured networks</span><span class="stat-icon">▦</span></div><strong class="stat-number">02</strong><div class="stat-foot">BeatNetwork & HelloPvP</div></article>
+        <article class="stat-card reveal"><div class="stat-top"><span>Core specialties</span><span class="stat-icon">✦</span></div><strong class="stat-number">04</strong><div class="stat-foot">Servers, plugins, Skripts, Discord</div></article>
+      </div>
+      <p class="stat-note reveal">The client and project totals are intentionally left blank until you enter your real numbers in the configuration near the end of this HTML file.</p>
+    </div></section>
+
+    <section class="section" id="services"><div class="wrap"><div class="section-head reveal"><div class="kicker">The service store</div><h2>Pick your build.<br>Make it yours.</h2><p>From a full network setup to one highly specific plugin, choose the service that fits your next idea. Every build can be scoped to your server version, feature list and community.</p></div>
+      <div class="service-toolbar reveal"><div class="filter-list" role="group" aria-label="Filter services"><button class="filter-btn active" data-filter="all" aria-pressed="true">All services</button><button class="filter-btn" data-filter="minecraft" aria-pressed="false">Minecraft</button><button class="filter-btn" data-filter="discord" aria-pressed="false">Discord</button><button class="filter-btn" data-filter="management" aria-pressed="false">Management</button></div><span class="catalog-count" id="catalogCount">06 services available</span></div>
+      <div class="services-grid" id="servicesGrid">
+        <article class="service-card reveal" data-category="minecraft"><div class="card-top"><span class="service-icon">▦</span><span class="card-index">01 / MC</span></div><h3>Custom Minecraft Servers</h3><p>From a blank setup to a full custom network: game modes, server structure, plugin stacks, permissions, performance and the details players notice.</p><div class="tag-list"><span class="tag">Network setup</span><span class="tag">Game modes</span><span class="tag">Configuration</span></div><a class="service-link" href="#contact" data-service="Custom Minecraft Server Build"><span>Discuss this build</span><span>↗</span></a></article>
+        <article class="service-card reveal" data-category="minecraft"><div class="card-top"><span class="service-icon">⌁</span><span class="card-index">02 / MC</span></div><h3>Server Revamps & Setup</h3><p>Refresh an existing server with cleaner configuration, a better plugin lineup, improved gameplay flow, permissions, performance and a more coherent player experience.</p><div class="tag-list"><span class="tag">Revamp</span><span class="tag">Plugin setup</span><span class="tag">Optimization</span></div><a class="service-link" href="#contact" data-service="Minecraft Server Revamp"><span>Discuss a revamp</span><span>↗</span></a></article>
+        <article class="service-card reveal" data-category="minecraft"><div class="card-top"><span class="service-icon">⌘</span><span class="card-index">03 / DEV</span></div><h3>Custom Plugins & Skripts</h3><p>Purpose-built mechanics, commands, GUIs, moderation, economy systems, events and automation. Features are shaped around the gameplay or workflow you describe.</p><div class="tag-list"><span class="tag">Plugins</span><span class="tag">Skript</span><span class="tag">GUI & commands</span></div><a class="service-link" href="#contact" data-service="Minecraft Plugin or Skript"><span>Build a feature</span><span>↗</span></a></article>
+        <article class="service-card reveal" data-category="discord"><div class="card-top"><span class="service-icon">◉</span><span class="card-index">04 / DC</span></div><h3>Discord Bots</h3><p>Custom bots for tickets, moderation, applications, logs, automation, utilities, APIs and server-specific flows—with commands and responses designed for your team.</p><div class="tag-list"><span class="tag">Custom commands</span><span class="tag">Tickets</span><span class="tag">Automation</span></div><a class="service-link" href="#contact" data-service="Custom Discord Bot"><span>Plan a bot</span><span>↗</span></a></article>
+        <article class="service-card reveal" data-category="discord"><div class="card-top"><span class="service-icon">◇</span><span class="card-index">05 / DC</span></div><h3>Custom Discord Servers</h3><p>A complete community setup with channels, roles, permissions, staff structure, onboarding, verification, moderation, tickets and an organized experience.</p><div class="tag-list"><span class="tag">Server structure</span><span class="tag">Roles & access</span><span class="tag">Community flow</span></div><a class="service-link" href="#contact" data-service="Custom Discord Server Setup"><span>Shape your server</span><span>↗</span></a></article>
+        <article class="service-card reveal" data-category="management"><div class="card-top"><span class="service-icon">◈</span><span class="card-index">06 / OPS</span></div><h3>Hosting & Server Management</h3><p>Practical hosting management, deployment support, configuration, resource awareness, maintenance planning and troubleshooting to keep the network organized.</p><div class="tag-list"><span class="tag">Hosting</span><span class="tag">Deployment</span><span class="tag">Operations</span></div><a class="service-link" href="#contact" data-service="Minecraft Hosting Management"><span>Discuss management</span><span>↗</span></a></article>
+      </div>
+    </div></section>
+
+    <section class="section plans-section" id="plans">
+      <div class="wrap">
+        <div class="section-head center reveal">
+          <div class="kicker">Straightforward packages</div>
+          <h2>Choose the scope.<br>Build it your way.</h2>
+          <p>Start with a plan that matches the size of your idea. Every package can be tailored to Minecraft, Discord or a combination of both. Final deliverables and pricing are agreed after we discuss the requirements.</p>
+        </div>
+        <div class="plans-grid">
+          <article class="plan-card reveal">
+            <div class="plan-top"><span class="plan-number">PLAN / 01</span><span class="plan-pill">STARTER</span></div>
+            <h3>Basic</h3>
+            <p class="plan-intro">For a smaller task, a first setup or one clear feature.</p>
+            <div class="plan-price">Request a quote</div><p class="plan-price-note">Price depends on the exact task and requirements.</p>
+            <div class="plan-divider"></div>
+            <ul class="plan-features">
+              <li><span class="plan-check">✓</span><span>One focused feature, fix or configuration task</span></li>
+              <li><span class="plan-check">✓</span><span>Simple Skript, plugin setup or Discord configuration</span></li>
+              <li><span class="plan-check">✓</span><span>Clear deliverables and a defined scope</span></li>
+              <li><span class="plan-check">✓</span><span>Best for getting one specific thing working</span></li>
+            </ul>
+            <a class="plan-button" href="#contact" data-plan="Basic">Choose Basic <span>↗</span></a>
+          </article>
+          <article class="plan-card featured reveal">
+            <div class="plan-top"><span class="plan-number">PLAN / 02</span><span class="plan-pill">GROWING PROJECT</span></div>
+            <h3>Advance</h3>
+            <p class="plan-intro">For projects that need several connected features.</p>
+            <div class="plan-price">Request a quote</div><p class="plan-price-note">Price depends on the exact task and requirements.</p>
+            <div class="plan-divider"></div>
+            <ul class="plan-features">
+              <li><span class="plan-check">✓</span><span>Multiple related features or configuration tasks</span></li>
+              <li><span class="plan-check">✓</span><span>Minecraft server revamp or a fuller Discord setup</span></li>
+              <li><span class="plan-check">✓</span><span>Custom bot workflows, permissions or plugin stacks</span></li>
+              <li><span class="plan-check">✓</span><span>Planned around a shared feature list</span></li>
+            </ul>
+            <a class="plan-button" href="#contact" data-plan="Advance">Choose Advance <span>↗</span></a>
+          </article>
+          <article class="plan-card reveal">
+            <div class="plan-top"><span class="plan-number">PLAN / 03</span><span class="plan-pill">FULL BUILD</span></div>
+            <h3>Pro</h3>
+            <p class="plan-intro">For bigger builds with more systems to coordinate.</p>
+            <div class="plan-price">Request a quote</div><p class="plan-price-note">Price depends on the exact task and requirements.</p>
+            <div class="plan-divider"></div>
+            <ul class="plan-features">
+              <li><span class="plan-check">✓</span><span>Advanced custom plugins, Skripts or bot features</span></li>
+              <li><span class="plan-check">✓</span><span>More complete server or community setup</span></li>
+              <li><span class="plan-check">✓</span><span>Configuration, integration and testing in scope</span></li>
+              <li><span class="plan-check">✓</span><span>Milestones agreed for a larger delivery</span></li>
+            </ul>
+            <a class="plan-button" href="#contact" data-plan="Pro">Choose Pro <span>↗</span></a>
+          </article>
+          <article class="plan-card reveal">
+            <div class="plan-top"><span class="plan-number">PLAN / 04</span><span class="plan-pill">TAILORED</span></div>
+            <h3>Custom</h3>
+            <p class="plan-intro">For unique requirements or an ongoing partnership.</p>
+            <div class="plan-price">Custom proposal</div><p class="plan-price-note">We define the scope together before work begins.</p>
+            <div class="plan-divider"></div>
+            <ul class="plan-features">
+              <li><span class="plan-check">✓</span><span>Custom combination of Minecraft and Discord services</span></li>
+              <li><span class="plan-check">✓</span><span>Network builds, specialized systems or hosting management</span></li>
+              <li><span class="plan-check">✓</span><span>Requirements, priorities and timeline discussed directly</span></li>
+              <li><span class="plan-check">✓</span><span>Scope shaped around your project instead of a fixed bundle</span></li>
+            </ul>
+            <a class="plan-button" href="#contact" data-plan="Custom">Discuss a custom plan <span>↗</span></a>
+          </article>
+        </div>
+        <p class="plans-note reveal">No made-up fixed prices or hidden assumptions. You’ll confirm the final scope, deliverables and quote before committing.</p>
+      </div>
+    </section>
+
+    <section class="section work-section" id="work"><div class="wrap"><div class="section-head reveal"><div class="kicker">Selected work</div><h2>Built for real<br>communities.</h2><p>Two of the networks you mentioned are featured here. Add screenshots, server addresses or project links when you have approved visuals and public URLs ready.</p></div>
+      <div class="work-grid">
+        <article class="project-card primary-project reveal"><div class="project-meta"><span class="project-type">Featured project / 01</span><span class="project-status">Minecraft network</span></div><h3>BeatNetwork</h3><p class="project-summary">A featured network in the BeatStudios story. Use this space to explain your role, the server systems you managed, and the custom work you contributed.</p><div class="project-tags"><span>Server management</span><span>Configuration</span><span>Network systems</span></div><div class="project-art" aria-hidden="true"><div class="art-top"></div><div class="art-row"><span></span><span></span><span></span></div></div></article>
+        <article class="project-card secondary-project reveal"><div class="project-meta"><span class="project-type">Featured project / 02</span><span class="project-status">Minecraft network</span></div><h3>HelloPvP</h3><p class="project-summary">A second featured network. Highlight the modes, plugins, revamps or hosting responsibilities you handled for this project.</p><div class="project-tags"><span>Custom setup</span><span>Gameplay</span><span>Operations</span></div><div class="project-art" aria-hidden="true"><div class="art-top"></div><div class="art-row"><span></span><span></span><span></span></div></div></article>
+      </div>
+      <div class="mini-callout reveal"><div><strong>Have a server idea that doesn't fit in a box?</strong><span>Share the goal, your current setup and what you want the finished experience to feel like.</span></div><a class="btn primary" href="#contact">Scope a custom build ↗</a></div>
+    </div></section>
+
+    <section class="section" id="about"><div class="wrap"><div class="about-grid">
+      <article class="about-panel reveal"><div class="kicker">Meet the developer</div><h3>Hey, I'm Syed.<br>I build the systems behind the server.</h3><p>BeatStudios brings my Minecraft and Discord development work under one roof. I enjoy taking a rough idea—whether it's a new server, a plugin, a bot or a complete community—and turning it into a setup that feels intentional and works the way its owner needs.</p><div class="capability-list"><div class="capability"><span class="check">✓</span><span>Custom solutions instead of forcing every project into the same template.</span></div><div class="capability"><span class="check">✓</span><span>Clear feature planning and configuration that fits the intended community.</span></div><div class="capability"><span class="check">✓</span><span>Support across Minecraft gameplay, Discord workflows and hosting operations.</span></div></div></article>
+      <article class="about-panel reveal"><div class="kicker">How I think about a build</div><h3>Polished on the surface.<br>Solid underneath.</h3><p>A good server is more than a list of plugins. It needs a coherent player experience, sensible permissions, a setup that admins can understand, and systems that support the community instead of getting in its way.</p><div class="capability-list"><div class="capability"><span class="check">✓</span><span><strong>Player experience:</strong> predictable systems and thoughtful details.</span></div><div class="capability"><span class="check">✓</span><span><strong>Administration:</strong> organized configuration and maintainable workflows.</span></div><div class="capability"><span class="check">✓</span><span><strong>Visual quality:</strong> clean interfaces, useful feedback and purposeful motion.</span></div></div></article>
+    </div></div></section>
+
+    <section class="section" id="process"><div class="wrap"><div class="section-head center reveal"><div class="kicker">The process</div><h2>From first message<br>to ready-to-run.</h2><p>A clear path keeps the scope focused, communication simple and the final handoff easier to manage.</p></div><div class="process-grid">
+      <article class="process-step reveal"><span class="process-num">01 / DISCOVER</span><h3>Talk it through</h3><p>Share your goal, server version, current setup, must-have features and any constraints.</p></article>
+      <article class="process-step reveal"><span class="process-num">02 / SCOPE</span><h3>Plan the build</h3><p>Agree on deliverables, the approach, priorities and what a successful result looks like.</p></article>
+      <article class="process-step reveal"><span class="process-num">03 / BUILD</span><h3>Develop & configure</h3><p>Set up the systems, implement the requested features and refine the user experience.</p></article>
+      <article class="process-step reveal"><span class="process-num">04 / REFINE</span><h3>Test & hand over</h3><p>Review behavior, address issues and make the setup easier to use and maintain.</p></article>
+    </div></div></section>
+
+    <section class="section" id="contact"><div class="wrap"><div class="contact-shell">
+      <article class="contact-intro reveal"><div class="kicker">Start a project</div><h2>Let's build<br>something worth joining.</h2><p>Tell me what you're planning. Use the brief builder to create a clean message you can copy and send through your preferred contact channel.</p><div class="contact-checks"><div class="contact-check"><i>01</i><span>Pick the service you need</span></div><div class="contact-check"><i>02</i><span>Explain the idea and important details</span></div><div class="contact-check"><i>03</i><span>Copy your brief and send it to BeatStudios</span></div></div></article>
+      <article class="contact-form-panel reveal"><form id="briefForm"><div class="form-grid">
+        <div class="field"><label for="clientName">YOUR NAME / ALIAS</label><input id="clientName" name="clientName" autocomplete="name" placeholder="What should I call you?" required></div>
+        <div class="field"><label for="discordName">DISCORD USERNAME (OPTIONAL)</label><input id="discordName" name="discordName" autocomplete="off" placeholder="your_username"></div>
+        <div class="field"><label for="planChoice">PLAN / PACKAGE (OPTIONAL)</label><select id="planChoice" name="planChoice"><option value="">Not sure yet</option><option>Basic</option><option>Advance</option><option>Pro</option><option>Custom</option></select></div>
+        <div class="field"><label for="serviceChoice">WHAT ARE WE BUILDING?</label><select id="serviceChoice" name="serviceChoice" required><option value="">Choose a service</option><option>Custom Minecraft Server Build</option><option>Minecraft Server Revamp</option><option>Minecraft Plugin or Skript</option><option>Custom Discord Bot</option><option>Custom Discord Server Setup</option><option>Minecraft Hosting Management</option><option>Something else / multiple services</option></select></div>
+        <div class="field full"><label for="projectMessage">PROJECT DETAILS</label><textarea id="projectMessage" name="projectMessage" placeholder="What should it do? Add server version, features, current setup, budget or timeline if relevant." required></textarea></div>
+      </div><div class="form-foot"><button class="btn primary" type="submit">Create & copy brief <span>↗</span></button><span class="form-note">This doesn't send anything automatically. It prepares the message and copies it so you can send it yourself.</span></div></form></article>
+    </div></div></section>
+  </main>
+  <footer><div class="wrap footer-inner"><a class="footer-brand" href="#home">BeatStudios<span style="color:var(--blue-2)">.</span></a><span>Built for Minecraft · Discord · Community systems</span><div class="footer-links"><a href="#services">Services</a><a href="#work">Projects</a><a href="#contact">Contact</a></div></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* PERSONALIZE THESE VALUES BEFORE PUBLISHING.
+       Use verified totals only. Leave null to display a dash until you know the number. */
+    const portfolioStats = {
+      clients: null,  // Example: clients: 18
+      projects: null  // Example: projects: 32
+    };
+
+    // Apply editable portfolio metrics without inventing client/project totals.
+    document.querySelectorAll('[data-stat]').forEach((el) => {
+      const key = el.dataset.stat;
+      const value = portfolioStats[key];
+      if (Number.isFinite(value) && value >= 0) {
+        el.textContent = `${value.toLocaleString('en-US')}+`;
+      }
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      menuToggle.textContent = open ? '×' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Open navigation');
+      menuToggle.textContent = '☰';
+    }));
+
+    // Service filters keep the catalog quick to scan on desktop and mobile.
+    const filterButtons = [...document.querySelectorAll('.filter-btn')];
+    const serviceCards = [...document.querySelectorAll('.service-card')];
+    const catalogCount = document.getElementById('catalogCount');
+    filterButtons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      filterButtons.forEach(item => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      let visible = 0;
+      serviceCards.forEach(card => {
+        const show = filter === 'all' || card.dataset.category === filter;
+        card.hidden = !show;
+        if (show) visible++;
+      });
+      catalogCount.textContent = `${String(visible).padStart(2, '0')} ${visible === 1 ? 'service' : 'services'} available`;
+    }));
+
+    // Service cards can preselect a relevant service in the brief builder.
+    document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
+      const select = document.getElementById('serviceChoice');
+      const requested = link.dataset.service;
+      const matching = [...select.options].find(option => option.value === requested || option.text === requested);
+      if (matching) select.value = matching.value;
+    }));
+
+    // Plan cards carry the selected package into the contact brief.
+    document.querySelectorAll('[data-plan]').forEach(link => link.addEventListener('click', () => {
+      const select = document.getElementById('planChoice');
+      if (select) select.value = link.dataset.plan;
+    }));
+
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    function notify(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
+    }
+
+    document.getElementById('briefForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const name = document.getElementById('clientName').value.trim();
+      const discord = document.getElementById('discordName').value.trim();
+      const service = document.getElementById('serviceChoice').value;
+      const plan = document.getElementById('planChoice').value;
+      const details = document.getElementById('projectMessage').value.trim();
+      if (!name || !service || !details) {
+        notify('Please complete your name, service and project details.');
+        return;
+      }
+      const brief = [
+        'BEATSTUDIOS — NEW PROJECT BRIEF',
+        '──────────────────────────────',
+        `Name: ${name}`,
+        discord ? `Discord: ${discord}` : null,
+        `Service: ${service}`,
+        plan ? `Plan: ${plan}` : null,
+        '',
+        'Project details:',
+        details
+      ].filter(line => line !== null).join('\n');
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(brief);
+        } else {
+          const helper = document.createElement('textarea');
+          helper.value = brief;
+          helper.setAttribute('readonly', '');
+          helper.style.position = 'fixed'; helper.style.opacity = '0';
+          document.body.appendChild(helper); helper.select();
+          const copied = document.execCommand('copy');
+          helper.remove();
+          if (!copied) throw new Error('Clipboard unavailable');
+        }
+        notify('Project brief copied. Paste it into your message to BeatStudios.');
+      } catch (error) {
+        // Keep the brief available when clipboard permissions are blocked.
+        const helper = document.createElement('textarea');
+        helper.value = brief; helper.setAttribute('aria-label', 'Your project brief');
+        helper.style.cssText = 'position:fixed;inset:20% 8%;width:84%;height:60%;z-index:200;padding:16px;background:#08172b;color:#fff;border:1px solid #70bcff;border-radius:12px;';
+        document.body.appendChild(helper); helper.focus(); helper.select();
+        notify('Clipboard access was blocked. Your brief is selected—copy it manually.');
+      }
+    });
+
+    // Reveal elements as they enter view, with support for reduced-motion preferences.
+    const revealItems = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      }), {threshold: 0.1, rootMargin: '0px 0px -20px 0px'});
+      revealItems.forEach(item => observer.observe(item));
+    } else {
+      revealItems.forEach(item => item.classList.add('visible'));
+    }
+  </script>
+</body>
+</html>
